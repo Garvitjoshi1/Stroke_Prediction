@@ -1,5 +1,7 @@
 # Stroke Prediction using Machine Learning 
+
 <img src="brain.png" alt="Brain Imaging" style="width: 30%; margin: 5px;">
+
 ## Overview
 This project aims to predict the likelihood of a stroke using various machine learning algorithms. By analyzing medical and demographic data, we can identify key factors that contribute to stroke risk and build a predictive model to aid in early diagnosis and prevention.
 
