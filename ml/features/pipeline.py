@@ -4,6 +4,9 @@ from ml.features.preprocess import DataPreprocessor
 from ml.models.train import ModelTrainer
 from ml.models.evaluate import ModelEvaluator
 from ml.models.experiment import ExperimentRunner
+from ml.validation.cross_validation import CrossValidator
+from ml.models.registry import get_model_registry
+from ml.validation.threshold import ThresholdOptimizer
 
 config = load_config("configs/config.yaml")
 
@@ -116,3 +119,44 @@ print("MODEL LEADERBOARD")
 print("=" * 70)
 
 print(leaderboard)
+
+registry = get_model_registry()
+
+cv = CrossValidator()
+
+results = cv.evaluate(
+    registry["logistic_regression"],
+    X_train_processed,
+    y_train
+)
+
+print()
+
+print("=" * 60)
+print("5-Fold Cross Validation")
+print("=" * 60)
+
+print(results)
+
+optimizer = ThresholdOptimizer()
+
+threshold_results = optimizer.evaluate(
+    trainer.model,
+    X_test_processed,
+    y_test
+)
+
+print(threshold_results)
+
+best = optimizer.best_threshold(
+    threshold_results,
+    metric="f1_score"
+)
+
+print()
+
+print("=" * 60)
+print("Best Threshold")
+print("=" * 60)
+
+print(best)
