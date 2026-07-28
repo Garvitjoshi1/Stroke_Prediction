@@ -7,6 +7,7 @@ from ml.models.experiment import ExperimentRunner
 from ml.validation.cross_validation import CrossValidator
 from ml.models.registry import get_model_registry
 from ml.validation.threshold import ThresholdOptimizer
+from ml.imbalance.experiment import ImbalanceExperiment
 
 config = load_config("configs/config.yaml")
 
@@ -160,3 +161,29 @@ print("Best Threshold")
 print("=" * 60)
 
 print(best)
+
+experiment = ImbalanceExperiment()
+
+leaderboard = experiment.run(
+
+    X_train_processed,
+
+    y_train,
+
+    X_test_processed,
+
+    y_test,
+
+    model_name="logistic_regression"
+
+)
+
+print()
+
+print("="*80)
+
+print("IMBALANCE EXPERIMENTS")
+
+print("="*80)
+
+print(leaderboard)

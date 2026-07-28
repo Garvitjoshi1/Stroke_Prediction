@@ -1,4 +1,5 @@
 from sklearn.linear_model import LogisticRegression
+from xgboost import XGBClassifier
 from sklearn.ensemble import (
     RandomForestClassifier,
     GradientBoostingClassifier,
