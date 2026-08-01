@@ -12,6 +12,7 @@ from ml.imbalance.experiment import ImbalanceExperiment
 from ml.experiment.manager import ExperimentManager
 from ml.visualization import PlotManager
 from ml.explainability import ExplainabilityManager
+from ml.mlflow import MLFlowManager
 
 config = load_config("configs/config.yaml")
 
@@ -241,3 +242,10 @@ print("LOCAL EXPLANATION")
 print("=" * 80)
 
 print(local_report)
+
+mlflow_manager = MLFlowManager()
+
+mlflow_manager.log_training(
+    trainer=trainer,
+    metrics=metrics,
+)

@@ -1,0 +1,23 @@
+artifact_path: file:///D:/NeuroGuard/mlruns/1/models/m-38486562e24e400aa0dad4afa7e1b556/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.skops
+    predict_fn: predict
+    python_version: 3.11.0
+  sklearn:
+    code: null
+    pickled_model: model.skops
+    serialization_format: skops
+    sklearn_version: 1.9.0
+    skops_trusted_types: null
+mlflow_version: 3.15.0
+model_id: m-38486562e24e400aa0dad4afa7e1b556
+model_size_bytes: 15515
+model_uuid: m-38486562e24e400aa0dad4afa7e1b556
+prompts: null
+run_id: 8d8b6ae0e294429cb338be71050efb80
+utc_time_created: '2026-08-01 21:52:03.205145'
