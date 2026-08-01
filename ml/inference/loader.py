@@ -6,7 +6,6 @@ import joblib
 
 logger = logging.getLogger(__name__)
 
-
 class ArtifactLoader:
 
     def __init__(
@@ -21,22 +20,35 @@ class ArtifactLoader:
         self.metadata_dir = self.artifact_dir / "metadata"
 
     def load_model(
-        self,
-        filename: str = "logistic_regression.joblib",
-    ):
-
+    self,
+    filename: str = "logistic_regression.joblib",
+):
         path = self.model_dir / filename
-
         logger.info(
-            "Loading model from %s",
-            path,
+        "Loading model from %s",
+        path,
+    )
+        artifact = joblib.load(path)
+        if isinstance(artifact, dict):
+
+            logger.info(
+                "Detected bundled model artifact."
+            )
+
+            return artifact
+        logger.info(
+            "Detected legacy model artifact."
         )
 
-        model = joblib.load(path)
+        return {
 
-        logger.info("Model loaded successfully.")
+            "model": artifact,
 
-        return model
+            "model_name": "logistic_regression",
+
+            "training_time": None,
+
+        }
 
     def load_preprocessor(
         self,
@@ -50,32 +62,31 @@ class ArtifactLoader:
             path,
         )
 
-        preprocessor = joblib.load(path)
+        artifact = joblib.load(path)
 
-        logger.info("Preprocessor loaded successfully.")
+        if isinstance(artifact, dict):
 
-        return preprocessor
-
-    def load_feature_names(
-        self,
-        filename: str = "feature_names.joblib",
-    ):
-
-        path = self.preprocessor_dir / filename
-
-        if not path.exists():
-
-            logger.warning(
-                "Feature names not found."
+            logger.info(
+                "Detected bundled preprocessor artifact."
             )
 
-            return None
+            return artifact
 
         logger.info(
-            "Loading feature names..."
+            "Detected legacy preprocessor artifact."
         )
 
-        return joblib.load(path)
+        return {
+
+            "preprocessor": artifact,
+
+            "feature_names": None,
+
+            "numeric_features": None,
+
+            "categorical_features": None,
+
+        }
 
     def load_threshold(
         self,
@@ -87,7 +98,7 @@ class ArtifactLoader:
         if not path.exists():
 
             logger.warning(
-                "Threshold file missing. Using 0.50"
+                "Threshold file missing. Using default 0.50"
             )
 
             return 0.50
@@ -117,6 +128,10 @@ class ArtifactLoader:
 
         if not path.exists():
 
+            logger.warning(
+                "Model info file missing."
+            )
+
             return {}
 
         with open(path, "r") as f:
@@ -125,23 +140,36 @@ class ArtifactLoader:
 
     def load_all(self):
 
-        logger.info(
-            "=" * 60
-        )
-        logger.info(
-            "Loading inference artifacts..."
-        )
+        logger.info("=" * 60)
+        logger.info("Loading inference artifacts...")
+        logger.info("=" * 60)
+
+        model_bundle = self.load_model()
+
+        preprocessor_bundle = self.load_preprocessor()
 
         artifacts = {
 
             "model":
-                self.load_model(),
+                model_bundle["model"],
+
+            "model_name":
+                model_bundle.get("model_name"),
+
+            "training_time":
+                model_bundle.get("training_time"),
 
             "preprocessor":
-                self.load_preprocessor(),
+                preprocessor_bundle["preprocessor"],
 
             "feature_names":
-                self.load_feature_names(),
+                preprocessor_bundle["feature_names"],
+
+            "numeric_features":
+                preprocessor_bundle["numeric_features"],
+
+            "categorical_features":
+                preprocessor_bundle["categorical_features"],
 
             "threshold":
                 self.load_threshold(),
@@ -156,7 +184,6 @@ class ArtifactLoader:
         )
 
         return artifacts
-
 
 if __name__ == "__main__":
 
@@ -177,4 +204,4 @@ if __name__ == "__main__":
 
     for key, value in artifacts.items():
 
-        print(f"{key:15}: {type(value)}")
+        print(f"{key:20}: {type(value)}")

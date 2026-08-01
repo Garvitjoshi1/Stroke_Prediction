@@ -1,21 +1,8 @@
 import joblib
 
-from ml.visualization.roc import ROCPlotter
+obj = joblib.load("artifacts/models/logistic_regression.joblib")
 
-model = joblib.load(
-    "artifacts/models/logistic_regression.joblib"
-)
+print(type(obj))
 
-X_test = joblib.load(
-    "artifacts/datasets/X_test_processed.pkl"
-)
-
-y_test = joblib.load(
-    "artifacts/datasets/y_test.pkl"
-)
-
-ROCPlotter().plot_and_save(
-    model,
-    X_test,
-    y_test,
-)
+if isinstance(obj, dict):
+    print(obj.keys())

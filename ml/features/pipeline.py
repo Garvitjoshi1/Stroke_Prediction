@@ -11,6 +11,7 @@ from ml.validation.threshold import ThresholdOptimizer
 from ml.imbalance.experiment import ImbalanceExperiment
 from ml.experiment.manager import ExperimentManager
 from ml.visualization import PlotManager
+from ml.explainability import ExplainabilityManager
 
 config = load_config("configs/config.yaml")
 
@@ -222,3 +223,21 @@ PlotManager().generate_all(
     y_test=y_test,
     feature_names=feature_names,
 )
+
+explainability = ExplainabilityManager(
+    model=trainer.model
+)
+
+local_report = explainability.generate_all(
+    X=X_test_processed,
+    feature_names=feature_names,
+    sample_index=0,
+)
+
+print()
+
+print("=" * 80)
+print("LOCAL EXPLANATION")
+print("=" * 80)
+
+print(local_report)
