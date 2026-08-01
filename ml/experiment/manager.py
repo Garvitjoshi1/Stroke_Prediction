@@ -13,7 +13,6 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-
 class ExperimentManager:
 
     def __init__(
@@ -41,7 +40,7 @@ class ExperimentManager:
         self.data_dir = self.experiment_dir / "data"
 
         self._create_directories()
-        self.artifact_manager = ArtifactManager(
+        self.artifacts = ArtifactManager(
             self.experiment_dir
             )
 
@@ -75,8 +74,8 @@ class ExperimentManager:
     ):
 
         path = self.artifacts.dataframe(
-    filename.replace(".csv", "")
-)
+            filename.replace(".csv", "")
+            )
 
         df.to_csv(
             path,

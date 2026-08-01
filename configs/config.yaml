@@ -4,6 +4,8 @@ dataset:
 training:
   random_state: 42
   test_size: 0.2
+  threshold: 0.5
+  cv: 5
 
 model:
   target: stroke

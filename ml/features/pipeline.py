@@ -1,6 +1,7 @@
 from ml.data.load_data import load_config, load_dataset
 from ml.features.split import split_dataset
 from ml.features.preprocess import DataPreprocessor
+from ml.imbalance import metrics
 from ml.models.train import ModelTrainer
 from ml.models.evaluate import ModelEvaluator
 from ml.models.experiment import ExperimentRunner
@@ -8,6 +9,8 @@ from ml.validation.cross_validation import CrossValidator
 from ml.models.registry import get_model_registry
 from ml.validation.threshold import ThresholdOptimizer
 from ml.imbalance.experiment import ImbalanceExperiment
+from ml.experiment.manager import ExperimentManager
+from ml.visualization import PlotManager
 
 config = load_config("configs/config.yaml")
 
@@ -81,6 +84,7 @@ results = evaluator.evaluate(
     X_test_processed,
     y_test
 )
+metrics = results["metrics"]
 
 print()
 
@@ -125,7 +129,7 @@ registry = get_model_registry()
 
 cv = CrossValidator()
 
-results = cv.evaluate(
+cv_results = cv.evaluate(
     registry["logistic_regression"],
     X_train_processed,
     y_train
@@ -137,7 +141,7 @@ print("=" * 60)
 print("5-Fold Cross Validation")
 print("=" * 60)
 
-print(results)
+print(cv_results)
 
 optimizer = ThresholdOptimizer()
 
@@ -164,7 +168,7 @@ print(best)
 
 experiment = ImbalanceExperiment()
 
-leaderboard = experiment.run(
+imbalance_df = experiment.run(
 
     X_train_processed,
 
@@ -186,4 +190,35 @@ print("IMBALANCE EXPERIMENTS")
 
 print("="*80)
 
-print(leaderboard)
+print(imbalance_df)
+
+manager = ExperimentManager(
+    experiment_name="baseline_logistic"
+)
+manager.save_dataframe(imbalance_df, "imbalance_results.csv")
+
+manager.save_dataframe(cv_results, "cross_validation.csv")
+
+manager.save_dataframe(threshold_results, "threshold.csv")
+
+manager.save_dataframe(
+    imbalance_df,
+    "imbalance_results.csv"
+)
+
+manager.save_json(
+    metrics,
+    "metrics.json"
+)
+
+manager.save_model(
+    trainer.model,
+    "best_model.joblib"
+)
+
+PlotManager().generate_all(
+    model=trainer.model,
+    X_test=X_test_processed,
+    y_test=y_test,
+    feature_names=feature_names,
+)
