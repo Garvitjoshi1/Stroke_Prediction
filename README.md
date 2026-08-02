@@ -8,8 +8,6 @@
 [![SHAP](https://img.shields.io/badge/Explainability-SHAP-red.svg)]()
 [![MLflow](https://img.shields.io/badge/Experiment-Tracking-blueviolet.svg)]()
 
-</p>
-
 ---
 
 ## Overview
@@ -376,81 +374,6 @@ docker compose up
 
 ---
 
-# Example Prediction
-
-Request
-
-```json
-{
-  "gender":"Male",
-  "age":67,
-  "hypertension":1,
-  "heart_disease":1,
-  "ever_married":"Yes",
-  "work_type":"Private",
-  "Residence_type":"Urban",
-  "avg_glucose_level":228.69,
-  "bmi":36.6,
-  "smoking_status":"formerly smoked"
-}
-```
-
-Response
-
-```json
-{
-    "prediction":1,
-    "probability":0.896,
-    "risk":"Very High",
-    "model":"logistic_regression",
-    "version":"v1.0"
-}
-```
-
----
-
-# Generated Artifacts
-
-```
-artifacts/
-
-datasets/
-models/
-preprocessors/
-metadata/
-figures/
-experiments/
-explainability/
-```
-
-Artifacts include
-
-- trained models
-- preprocessing pipeline
-- threshold configuration
-- evaluation metrics
-- ROC curve
-- confusion matrix
-- SHAP plots
-- feature importance
-- calibration curve
-
----
-
-# Future Improvements
-
-- Continuous model retraining
-- Data drift detection
-- Prediction drift monitoring
-- Authentication and authorization
-- Database-backed prediction logging
-- User feedback collection
-- CI/CD pipeline
-- Cloud deployment (AWS/GCP/Azure)
-- Kubernetes deployment
-- Model registry
-
----
 
 # Disclaimer
 
