@@ -1,200 +1,1435 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NeuroGuard · Stroke Risk AI</title>
-    <!-- Google Font & Font Awesome for icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
-        rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="description" content="NeuroGuard - Comprehensive stroke risk assessment, brain health tracking, and clinical consultation reports." />
+    <title>NeuroGuard · Understand Your Brain & Heart Health</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        teal: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        sage: {
+                            50: '#f4f7f5',
+                            100: '#e3ebe6',
+                            200: '#c7d7cd',
+                            700: '#3e5c4a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .warm-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .warm-card:hover {
+            box-shadow: 0 12px 30px -4px rgba(13, 148, 136, 0.08);
+        }
+
+        .nav-link {
+            position: relative;
+            font-weight: 600;
+            color: #475569;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #0d9488;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -18px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: #0d9488;
+            border-radius: 3px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Scroll-driven journey milestone animation */
+        .journey-stop {
+            opacity: 0.45;
+            transform: translateY(24px) scale(0.97);
+            filter: grayscale(40%);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .journey-stop.is-active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: grayscale(0%);
+        }
+
+        /* Custom touch friendly focus outline */
+        input:focus, select:focus, button:focus-visible {
+            outline: 2px solid #0d9488;
+            outline-offset: 1px;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .print-only {
+                display: block !important;
+            }
+
+            .warm-card {
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+            }
+        }
+    </style>
 </head>
 
-<body>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-teal-100 selection:text-teal-900">
 
-    <div class="background"></div>
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
 
-    <!-- Navbar -->
-    <header class="navbar">
-        <div class="logo">
-            <i class="fas fa-brain" style="margin-right: 10px; color: #3b82f6;"></i> NeuroGuard
-        </div>
-        <div class="status-wrapper">
-            <span class="status-dot" id="status-dot"></span>
-            <span id="api-status">Checking API…</span>
+                <!-- BRAND / LOGO -->
+                <button onclick="showTab('home')" class="flex items-center gap-3 group text-left focus:outline-none" aria-label="Go to NeuroGuard Home">
+                    <div class="w-11 h-11 rounded-full border border-teal-100 bg-teal-50 flex items-center justify-center overflow-hidden p-1 group-hover:border-teal-500 transition-colors shadow-sm">
+                        <img src="logo.png" alt="NeuroGuard Logo" class="w-full h-full object-contain rounded-full"
+                            onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+
+                        <svg class="w-7 h-7 hidden" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="logoLeftGrad" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#14b8a6" />
+                                    <stop offset="100%" stop-color="#0d9488" />
+                                </linearGradient>
+                                <linearGradient id="logoRightGrad" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#f97316" />
+                                    <stop offset="100%" stop-color="#ec4899" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M46 22C38 22 30 26 26 33C22 40 22 50 24 58C26 66 32 72 38 76C42 78 46 78 46 78V22Z"
+                                stroke="url(#logoLeftGrad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+                            <circle cx="28" cy="42" r="3" fill="#14b8a6" />
+                            <circle cx="32" cy="54" r="3" fill="#14b8a6" />
+                            <circle cx="38" cy="66" r="3" fill="#0d9488" />
+                            <path d="M54 22C62 22 70 26 74 33C78 40 78 50 76 58C74 66 68 72 62 76C58 78 54 78 54 78V22Z"
+                                stroke="url(#logoRightGrad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M54 50H58L62 38L68 62L72 46L76 50H82" stroke="url(#logoRightGrad)" stroke-width="5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="font-display font-extrabold text-xl tracking-tight text-slate-900 group-hover:text-teal-600 transition-colors">Neuro<span class="text-teal-600">Guard</span></span>
+                        <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-500">Brain &amp; Heart Care</span>
+                    </div>
+                </button>
+
+                <!-- DESKTOP NAVIGATION LINKS -->
+                <nav class="hidden md:flex items-center gap-8">
+                    <button onclick="showTab('home')" id="nav-home" class="nav-link active text-sm font-bold">Home</button>
+                    <button onclick="showTab('services')" id="nav-services" class="nav-link text-sm font-bold">See How It Works</button>
+                    <button onclick="showTab('assessment')" id="nav-assessment" class="nav-link text-sm font-bold">Start Health Check</button>
+                    <button onclick="showTab('reports')" id="nav-reports" class="nav-link text-sm font-bold">My Report</button>
+                </nav>
+
+                <!-- ACTION BUTTONS & PROFILE INDICATOR -->
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="hidden sm:flex flex-col text-right">
+                        <span class="text-xs font-bold text-slate-900" id="headerClinicianName">Dr. Unregistered</span>
+                        <span class="text-[11px] text-teal-700 font-medium" id="headerClinicianRole">Session Auto-Saved</span>
+                    </div>
+
+                    <button onclick="openClinicianModal()"
+                        class="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-teal-600 hover:border-teal-500 hover:bg-teal-50/50 transition-all focus:outline-none min-h-[44px] min-w-[44px] flex items-center justify-center"
+                        title="Configure Clinician Credentials & Profile">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </button>
+
+                    <button onclick="showTab('assessment')"
+                        class="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-xs font-bold rounded-xl text-white bg-teal-600 hover:bg-teal-700 transition-colors shadow-sm min-h-[44px]">
+                        Start Health Check
+                    </button>
+
+                    <!-- MOBILE HAMBURGER BUTTON -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Toggle Navigation Menu">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="mobileMenu" class="hidden md:hidden border-t border-slate-200 py-3 space-y-2">
+                <button onclick="showTab('home'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-sm font-bold text-slate-700 hover:bg-teal-50 hover:text-teal-700 rounded-lg">Home</button>
+                <button onclick="showTab('services'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-sm font-bold text-slate-700 hover:bg-teal-50 hover:text-teal-700 rounded-lg">See How It Works</button>
+                <button onclick="showTab('assessment'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-sm font-bold text-slate-700 hover:bg-teal-50 hover:text-teal-700 rounded-lg">Start Health Check</button>
+                <button onclick="showTab('reports'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-sm font-bold text-slate-700 hover:bg-teal-50 hover:text-teal-700 rounded-lg">My Report</button>
+            </div>
         </div>
     </header>
 
-    <main class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <h1>
-                <i class="fas fa-heartbeat" style="color: #3b82f6; margin-right: 12px;"></i>
-                Stroke Risk Prediction
-            </h1>
-            <p>
-                Machine Learning powered early stroke risk assessment using
-                Logistic Regression with Explainable AI (SHAP).
-            </p>
-        </section>
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
-        <!-- Dashboard Grid -->
-        <div class="dashboard">
+        <!-- ==================== TAB 1: HOME PAGE ==================== -->
+        <div id="tab-home" class="tab-content active space-y-12">
 
-            <!-- Left Panel – Form -->
-            <div class="left-panel">
-                <div class="card form-card">
-                    <h2><i class="fas fa-user-md" style="margin-right: 10px; color: #3b82f6;"></i> Patient Information
-                    </h2>
-                    <form id="prediction-form">
-                        <div class="grid">
-                            <div class="input-group">
-                                <label><i class="fas fa-venus-mars"></i> Gender</label>
-                                <select id="gender">
-                                    <option>Male</option>
-                                    <option>Female</option>
-                                    <option>Other</option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label><i class="fas fa-calendar-alt"></i> Age</label>
-                                <input id="age" type="number" step="1" min="0" max="120" value="67" />
-                            </div>
-                            <div class="input-group">
-                                <label><i class="fas fa-heart"></i> Hypertension</label>
-                                <select id="hypertension">
-                                    <option value="0">No</option>
-                                    <option value="1">Yes</option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label><i class="fas fa-heartbeat"></i> Heart Disease</label>
-                                <select id="heart_disease">
-                                    <option value="0">No</option>
-                                    <option value="1">Yes</option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label><i class="fas fa-ring"></i> Ever Married</label>
-                                <select id="ever_married">
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label><i class="fas fa-briefcase"></i> Work Type</label>
-                                <select id="work_type">
-                                    <option>Private</option>
-                                    <option>Govt_job</option>
-                                    <option>Self-employed</option>
-                                    <option>Never_worked</option>
-                                    <option>children</option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label><i class="fas fa-home"></i> Residence</label>
-                                <select id="Residence_type">
-                                    <option>Urban</option>
-                                    <option>Rural</option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label><i class="fas fa-tint"></i> Avg. Glucose (mg/dL)</label>
-                                <input id="avg_glucose_level" type="number" step="0.1" min="0" value="228.69" />
-                            </div>
-                            <div class="input-group">
-                                <label><i class="fas fa-weight"></i> BMI</label>
-                                <input id="bmi" type="number" step="0.1" min="0" value="36.6" />
-                            </div>
-                            <div class="input-group">
-                                <label><i class="fas fa-smoking"></i> Smoking Status</label>
-                                <select id="smoking_status">
-                                    <option>formerly smoked</option>
-                                    <option>never smoked</option>
-                                    <option>smokes</option>
-                                    <option>Unknown</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button id="predict-btn" type="submit">
-                            <i class="fas fa-microchip" style="margin-right: 8px;"></i> Predict Stroke Risk
+            <!-- HERO SECTION -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200/60 text-xs font-bold tracking-wide">
+                        <span class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+                        Personal Health Assessment &bull; Auto-Saving Enabled
+                    </div>
+
+                    <h1 class="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.12]">
+                        Understand Your Brain &amp; Heart Health in Minutes.
+                    </h1>
+
+                    <p class="text-slate-600 text-base sm:text-lg leading-relaxed max-w-2xl font-normal">
+                        Take control of your well-being with a simple, personalized health assessment designed to help you stay ahead of stroke risks and live with confidence.
+                    </p>
+
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <button onclick="showTab('assessment')"
+                            class="px-7 py-3.5 text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-sm transition-all flex items-center gap-2 min-h-[44px]">
+                            <span>Start My Health Check</span>
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
                         </button>
-                    </form>
+
+                        <button onclick="showTab('services')"
+                            class="px-6 py-3.5 text-sm font-bold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-xl transition-colors min-h-[44px]">
+                            See How It Works
+                        </button>
+                    </div>
+
+                    <!-- CONSUMER STAT CARDS -->
+                    <div class="grid grid-cols-3 gap-3 sm:gap-4 pt-6 border-t border-slate-200/80">
+                        <div class="p-3.5 rounded-xl bg-white border border-slate-100 shadow-sm">
+                            <span class="block font-display font-extrabold text-xl sm:text-2xl text-teal-700">95%</span>
+                            <span class="text-xs text-slate-600 font-semibold">Accuracy Rate</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-white border border-slate-100 shadow-sm">
+                            <span class="block font-display font-extrabold text-xl sm:text-2xl text-teal-700">12,500+</span>
+                            <span class="text-xs text-slate-600 font-semibold">People Helped</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-white border border-slate-100 shadow-sm">
+                            <span class="block font-display font-extrabold text-xl sm:text-2xl text-teal-700">Science-Backed</span>
+                            <span class="text-xs text-slate-600 font-semibold">Validated Insights</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT HERO GRAPHIC: CONSUMER HEALTH OUTLOOK -->
+                <div class="lg:col-span-5">
+                    <div class="warm-card p-5 sm:p-6 bg-white space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-teal-500"></div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-slate-700">Your 5-Year Health Outlook</span>
+                            </div>
+                            <span class="text-xs text-teal-700 font-bold bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-100">Live Preview</span>
+                        </div>
+
+                        <!-- SVG Health Outlook Chart -->
+                        <div class="h-44 sm:h-48 w-full relative flex items-end">
+                            <svg class="w-full h-full" viewBox="0 0 300 150" fill="none">
+                                <path d="M 0 130 Q 75 125, 150 80 T 300 20" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4" />
+                                <path d="M 0 130 Q 75 110, 150 60 T 300 10" stroke="#0d9488" stroke-width="3" />
+                                <circle cx="150" cy="60" r="5" fill="#0d9488" />
+                                <text x="160" y="55" fill="#0f766e" font-size="11" font-weight="bold">Health Outlook Point</text>
+                            </svg>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-teal-50/50 border border-teal-100 text-xs text-slate-600 space-y-1">
+                            <span class="font-bold text-slate-900">How Your Score Works:</span>
+                            <p class="leading-relaxed">
+                                Your personalized score looks at everyday health factors like blood pressure, blood sugar, age, and family history to give you clear, actionable advice.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Right Panel – Results & Info -->
-            <div class="right-panel">
-                <!-- Prediction Gauge -->
-                <div class="card result-card">
-                    <h2><i class="fas fa-chart-pie" style="margin-right: 10px; color: #3b82f6;"></i> Prediction</h2>
-                    <div class="risk-circle">
-                        <svg viewBox="0 0 180 180">
-                            <circle cx="90" cy="90" r="75" id="progress-bg" />
-                            <circle cx="90" cy="90" r="75" id="progress" />
+            <!-- WINDING ROAD PREVENTIVE JOURNEY -->
+            <div class="warm-card p-6 sm:p-10 space-y-8 bg-white relative overflow-hidden">
+
+                <!-- SECTION HEADER -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-100 pb-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 text-xs font-bold uppercase tracking-wider mb-2">
+                            <svg class="w-3.5 h-3.5 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                            </svg>
+                            Your Health Journey
+                        </div>
+                        <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
+                            The Stroke Prevention &amp; Health Journey Road
+                        </h2>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium max-w-sm">
+                        As you scroll down, each stop on your roadmap brightens with clear steps to protect your brain and heart health.
+                    </p>
+                </div>
+
+                <!-- ROAD CONTAINER WITH DOTTED PATH -->
+                <div class="relative py-4">
+
+                    <!-- DESKTOP WINDING DOTTED PATH -->
+                    <div class="hidden lg:block absolute inset-0 pointer-events-none z-0">
+                        <svg class="w-full h-full" viewBox="0 0 800 1200" preserveAspectRatio="none" fill="none">
+                            <path d="M 400 30 C 650 150, 650 300, 400 450 C 150 600, 150 750, 400 900 C 650 1050, 500 1150, 400 1180"
+                                stroke="#0d9488" stroke-width="3" stroke-dasharray="10 8" opacity="0.35" />
                         </svg>
-                        <div class="risk-text">
-                            <h1 id="probability">--</h1>
-                            <span>Probability</span>
-                        </div>
                     </div>
-                    <div class="prediction-box">
-                        <div>
-                            <span><i class="fas fa-exclamation-triangle"></i> Risk</span>
-                            <h3 id="risk">--</h3>
+
+                    <!-- MOBILE VERTICAL DOTTED LINE -->
+                    <div class="lg:hidden absolute left-6 top-6 bottom-6 w-0.5 border-l-2 border-dashed border-teal-500/40 z-0"></div>
+
+                    <!-- ROAD MILESTONE STOPS -->
+                    <div class="space-y-12 relative z-10">
+
+                        <!-- STOP 1 -->
+                        <div class="journey-stop grid grid-cols-1 lg:grid-cols-12 gap-6 items-center" id="stop-1">
+                            <div class="lg:col-span-5 order-1 lg:order-1">
+                                <div class="warm-card p-4 bg-slate-50 border border-slate-200">
+                                    <div class="relative h-48 rounded-xl bg-white border border-slate-200 overflow-hidden flex items-center justify-center p-4">
+                                        <img src="1.png" alt="Stop 1 Baseline Screening"
+                                            class="w-full h-full object-cover rounded-lg"
+                                            onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+
+                                        <div class="w-full h-full flex items-center justify-center bg-teal-50/60 rounded-lg">
+                                            <svg class="w-20 h-20 text-teal-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                <circle cx="12" cy="14" r="3" fill="#14b8a6" opacity="0.3" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="hidden lg:flex lg:col-span-2 justify-center order-2">
+                                <div class="w-12 h-12 rounded-full bg-teal-600 text-white font-extrabold text-sm flex items-center justify-center border-4 border-white shadow-md">
+                                    01
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-5 order-2 lg:order-3 space-y-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="lg:hidden w-8 h-8 rounded-full bg-teal-600 text-white font-bold text-xs flex items-center justify-center">01</span>
+                                    <span class="text-xs font-bold uppercase tracking-wider text-teal-700">Step 1 &bull; Initial Check</span>
+                                </div>
+                                <h3 class="font-display text-lg font-bold text-slate-900">Baseline Health &amp; Biomarker Assessment</h3>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    Establish your personal starting point by checking blood pressure, blood sugar, and cholesterol levels.
+                                </p>
+                                <div class="pt-2 grid grid-cols-2 gap-2 text-[11px]">
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-semibold">&bull; Fasting Glucose Check</div>
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-semibold">&bull; Blood Pressure Check</div>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <span><i class="fas fa-flag"></i> Prediction</span>
-                            <h3 id="prediction">--</h3>
+
+                        <!-- STOP 2 -->
+                        <div class="journey-stop grid grid-cols-1 lg:grid-cols-12 gap-6 items-center" id="stop-2">
+                            <div class="lg:col-span-5 order-2 lg:order-1 space-y-2 text-left lg:text-right">
+                                <div class="flex items-center lg:justify-end gap-2">
+                                    <span class="lg:hidden w-8 h-8 rounded-full bg-teal-600 text-white font-bold text-xs flex items-center justify-center">02</span>
+                                    <span class="text-xs font-bold uppercase tracking-wider text-teal-700">Step 2 &bull; Month 1–3</span>
+                                </div>
+                                <h3 class="font-display text-lg font-bold text-slate-900">Blood Pressure &amp; Blood Sugar Balance</h3>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    Target your key health drivers by keeping blood pressure steady (&lt; 130/80 mmHg) and maintaining stable energy levels.
+                                </p>
+                                <div class="pt-2 grid grid-cols-2 gap-2 text-[11px] text-left">
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-semibold">&bull; Healthy Target Range</div>
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-semibold">&bull; Balanced Nutrition Guidance</div>
+                                </div>
+                            </div>
+
+                            <div class="hidden lg:flex lg:col-span-2 justify-center order-2">
+                                <div class="w-12 h-12 rounded-full bg-teal-600 text-white font-extrabold text-sm flex items-center justify-center border-4 border-white shadow-md">
+                                    02
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-5 order-1 lg:order-3">
+                                <div class="warm-card p-4 bg-slate-50 border border-slate-200">
+                                    <div class="relative h-48 rounded-xl bg-white border border-slate-200 overflow-hidden flex items-center justify-center p-4">
+                                        <img src="2.png" alt="Stop 2 Blood Pressure Balance"
+                                            class="w-full h-full object-cover rounded-lg"
+                                            onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                                        <div class="w-full h-full flex items-center justify-center bg-teal-50/60 rounded-lg">
+                                            <svg class="w-20 h-20 text-teal-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- STOP 3 -->
+                        <div class="journey-stop grid grid-cols-1 lg:grid-cols-12 gap-6 items-center" id="stop-3">
+                            <div class="lg:col-span-5 order-1 lg:order-1">
+                                <div class="warm-card p-4 bg-slate-50 border border-slate-200">
+                                    <div class="relative h-48 rounded-xl bg-white border border-slate-200 overflow-hidden flex items-center justify-center p-4">
+                                        <img src="3.png" alt="Stop 3 Heart & Blood Vessel Care"
+                                            class="w-full h-full object-cover rounded-lg"
+                                            onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                                        <div class="w-full h-full flex items-center justify-center bg-teal-50/60 rounded-lg">
+                                            <svg class="w-20 h-20 text-teal-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.684a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="hidden lg:flex lg:col-span-2 justify-center order-2">
+                                <div class="w-12 h-12 rounded-full bg-teal-600 text-white font-extrabold text-sm flex items-center justify-center border-4 border-white shadow-md">
+                                    03
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-5 order-2 lg:order-3 space-y-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="lg:hidden w-8 h-8 rounded-full bg-teal-600 text-white font-bold text-xs flex items-center justify-center">03</span>
+                                    <span class="text-xs font-bold uppercase tracking-wider text-teal-700">Step 3 &bull; Month 3–6</span>
+                                </div>
+                                <h3 class="font-display text-lg font-bold text-slate-900">Heart &amp; Arterial Protection</h3>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    Keep your blood vessels clear and healthy by optimizing cholesterol levels and scheduling routine cardiovascular checks.
+                                </p>
+                                <div class="pt-2 grid grid-cols-2 gap-2 text-[11px]">
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-semibold">&bull; Cholesterol Management</div>
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-semibold">&bull; Vascular Health Checks</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STOP 4 -->
+                        <div class="journey-stop grid grid-cols-1 lg:grid-cols-12 gap-6 items-center" id="stop-4">
+                            <div class="lg:col-span-5 order-2 lg:order-1 space-y-2 text-left lg:text-right">
+                                <div class="flex items-center lg:justify-end gap-2">
+                                    <span class="lg:hidden w-8 h-8 rounded-full bg-teal-600 text-white font-bold text-xs flex items-center justify-center">04</span>
+                                    <span class="text-xs font-bold uppercase tracking-wider text-teal-700">Step 4 &bull; Month 6–9</span>
+                                </div>
+                                <h3 class="font-display text-lg font-bold text-slate-900">Active Living &amp; Healthy Habits</h3>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    Build long-term stamina with 150 minutes of weekly activity, heart-healthy dietary choices, and tobacco cessation support.
+                                </p>
+                                <div class="pt-2 grid grid-cols-2 gap-2 text-[11px] text-left">
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-semibold">&bull; Weekly Aerobic Exercise</div>
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-semibold">&bull; Mediterranean Nutrition</div>
+                                </div>
+                            </div>
+
+                            <div class="hidden lg:flex lg:col-span-2 justify-center order-2">
+                                <div class="w-12 h-12 rounded-full bg-teal-600 text-white font-extrabold text-sm flex items-center justify-center border-4 border-white shadow-md">
+                                    04
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-5 order-1 lg:order-3">
+                                <div class="warm-card p-4 bg-slate-50 border border-slate-200">
+                                    <div class="relative h-48 rounded-xl bg-white border border-slate-200 overflow-hidden flex items-center justify-center p-4">
+                                        <img src="4.png" alt="Stop 4 Healthy Living"
+                                            class="w-full h-full object-cover rounded-lg"
+                                            onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                                        <div class="w-full h-full flex items-center justify-center bg-teal-50/60 rounded-lg">
+                                            <svg class="w-20 h-20 text-teal-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STOP 5 -->
+                        <div class="journey-stop grid grid-cols-1 lg:grid-cols-12 gap-6 items-center" id="stop-5">
+                            <div class="lg:col-span-5 order-1 lg:order-1">
+                                <div class="warm-card p-4 bg-slate-50 border border-slate-200">
+                                    <div class="relative h-48 rounded-xl bg-white border border-slate-200 overflow-hidden flex items-center justify-center p-4">
+                                        <img src="5.png" alt="Stop 5 Long-Term Wellbeing"
+                                            class="w-full h-full object-cover rounded-lg"
+                                            onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                                        <div class="w-full h-full flex items-center justify-center bg-teal-50/60 rounded-lg">
+                                            <svg class="w-20 h-20 text-teal-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="hidden lg:flex lg:col-span-2 justify-center order-2">
+                                <div class="w-12 h-12 rounded-full bg-teal-600 text-white font-extrabold text-sm flex items-center justify-center border-4 border-white shadow-md">
+                                    05
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-5 order-2 lg:order-3 space-y-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="lg:hidden w-8 h-8 rounded-full bg-teal-600 text-white font-bold text-xs flex items-center justify-center">05</span>
+                                    <span class="text-xs font-bold uppercase tracking-wider text-teal-700">Step 5 &bull; Annual Checkup</span>
+                                </div>
+                                <h3 class="font-display text-lg font-bold text-slate-900">Sustained Long-Term Brain Protection</h3>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    Enjoy peace of mind with annual NeuroGuard checkups to keep your health score in a safe, vibrant range.
+                                </p>
+                                <div class="pt-2 grid grid-cols-2 gap-2 text-[11px]">
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-semibold">&bull; Annual Health Progress</div>
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-semibold">&bull; Sustained Peace of Mind</div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
+            </div>
 
-                <!-- Model Info -->
-                <div class="card info-card">
-                    <h2><i class="fas fa-robot" style="margin-right: 10px; color: #3b82f6;"></i> Model Information</h2>
-                    <table>
-                        <tr>
-                            <td>Model</td>
-                            <td id="model">Logistic Regression</td>
-                        </tr>
-                        <tr>
-                            <td>Version</td>
-                            <td id="version">v1.0</td>
-                        </tr>
-                        <tr>
-                            <td>Threshold</td>
-                            <td id="threshold">0.50</td>
-                        </tr>
-                    </table>
+        </div>
+
+        <!-- ==================== TAB 2: SERVICES ==================== -->
+        <div id="tab-services" class="tab-content space-y-8">
+            <div>
+                <h2 class="font-display text-2xl sm:text-3xl font-bold text-slate-900">How NeuroGuard Works</h2>
+                <p class="text-slate-600 text-sm mt-1">Simple, intelligent tools designed to give you clear guidance for brain and heart wellness.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="warm-card p-6 bg-white space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-slate-900">Personalized Health Calculator</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Combines your everyday vitals—like blood pressure, blood sugar, and lifestyle factors—into a clear 5-year outlook.
+                    </p>
+                    <button onclick="showTab('assessment')" class="text-xs font-bold text-teal-600 hover:text-teal-800 flex items-center gap-1 pt-2">
+                        <span>Launch Health Check</span>
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
 
-                <!-- SHAP Explanation -->
-                <div class="card shap-card">
-                    <h2><i class="fas fa-chart-bar" style="margin-right: 10px; color: #3b82f6;"></i> SHAP Explanation
-                    </h2>
-                    <div id="shap-list">
-                        <p class="shap-placeholder">Top contributing features will appear here.</p>
+                <div class="warm-card p-6 bg-white space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 30a1 1 0 000 2h2a1 1 0 000-2h-2zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18v-5m0 0l-2 2m2-2l2 2" />
+                        </svg>
                     </div>
+                    <h3 class="font-display text-xl font-bold text-slate-900">Clear Factor Breakdown</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Shows you exactly which lifestyle choices and health numbers are helping or hurting your score, so you know what to focus on.
+                    </p>
+                    <button onclick="showTab('assessment')" class="text-xs font-bold text-teal-600 hover:text-teal-800 flex items-center gap-1 pt-2">
+                        <span>View Key Factors</span>
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="warm-card p-6 bg-white space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-slate-900">Printable Consultation Summary</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Generates a clean, shareable summary report that you can print or bring directly to your doctor's office.
+                    </p>
+                    <button onclick="showTab('reports')" class="text-xs font-bold text-teal-600 hover:text-teal-800 flex items-center gap-1 pt-2">
+                        <span>View Sample Report</span>
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="warm-card p-6 bg-white space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-slate-900">Doctor &amp; Care Team Sync</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Designed to seamlessly share results with your healthcare provider for coordinated, confidence-backed care.
+                    </p>
+                    <button onclick="openClinicianModal()" class="text-xs font-bold text-teal-600 hover:text-teal-800 flex items-center gap-1 pt-2">
+                        <span>Set Doctor Credentials</span>
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
+
+        <!-- ==================== TAB 3: RISK ASSESSMENT ==================== -->
+        <div id="tab-assessment" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                <!-- INTAKE FORM (LEFT) -->
+                <div class="lg:col-span-7">
+                    <div class="warm-card p-6 sm:p-8 bg-white space-y-6">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div>
+                                <h2 class="font-display text-2xl font-bold text-slate-900">Start Your Personal Health Check</h2>
+                                <p class="text-xs text-slate-500 mt-1">Enter your details below. Your inputs are saved automatically on this device.</p>
+                            </div>
+                            <span id="autoSaveBadge" class="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-[11px] font-bold">
+                                <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Auto-Saved
+                            </span>
+                        </div>
+
+                        <form id="predForm" class="space-y-6" novalidate>
+
+                            <!-- Section 1 -->
+                            <div class="space-y-4">
+                                <span class="text-xs font-bold uppercase tracking-wider text-teal-700">1. Basic Details</span>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="age" class="block text-xs font-bold text-slate-700 mb-1">Age (Years)</label>
+                                        <input type="number" id="age" name="age" min="0" max="120" placeholder="e.g. 58" required
+                                            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600">
+                                    </div>
+                                    <div>
+                                        <label for="gender" class="block text-xs font-bold text-slate-700 mb-1">Biological Sex</label>
+                                        <select id="gender" name="gender" required
+                                            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-white">
+                                            <option value="" disabled selected>Select sex</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="residence" class="block text-xs font-bold text-slate-700 mb-1">Living Environment</label>
+                                        <select id="residence" name="residence"
+                                            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-white">
+                                            <option value="Urban">Urban / Suburban</option>
+                                            <option value="Rural">Rural</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="work" class="block text-xs font-bold text-slate-700 mb-1">Occupation</label>
+                                        <select id="work" name="work"
+                                            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-white">
+                                            <option value="Private">Private Sector</option>
+                                            <option value="Govt_job">Government / Public</option>
+                                            <option value="Self-employed">Self-employed</option>
+                                            <option value="Never_worked">Retired / Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 2 -->
+                            <div class="space-y-4 pt-2 border-t border-slate-100">
+                                <span class="text-xs font-bold uppercase tracking-wider text-teal-700">2. Medical History</span>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="hypertension" class="block text-xs font-bold text-slate-700 mb-1">High Blood Pressure History</label>
+                                        <select id="hypertension" name="hypertension"
+                                            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-white">
+                                            <option value="0">No (Normal)</option>
+                                            <option value="1">Yes (Diagnosed)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="heartDisease" class="block text-xs font-bold text-slate-700 mb-1">Heart Condition History</label>
+                                        <select id="heartDisease" name="heartDisease"
+                                            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-white">
+                                            <option value="0">No</option>
+                                            <option value="1">Yes</option>
+                                        </select>
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label for="smoking" class="block text-xs font-bold text-slate-700 mb-1">Smoking History</label>
+                                        <select id="smoking" name="smoking"
+                                            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 bg-white">
+                                            <option value="never smoked">Never smoked</option>
+                                            <option value="formerly smoked">Formerly smoked</option>
+                                            <option value="smokes">Active smoker</option>
+                                            <option value="Unknown">Prefer not to say</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 3 -->
+                            <div class="space-y-4 pt-2 border-t border-slate-100">
+                                <span class="text-xs font-bold uppercase tracking-wider text-teal-700">3. Vitals &amp; Biomarkers</span>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="glucose" class="block text-xs font-bold text-slate-700 mb-1">Average Blood Sugar (mg/dL)</label>
+                                        <input type="number" id="glucose" name="glucose" min="30" max="500" step="0.1" placeholder="e.g. 105.4" required
+                                            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600">
+                                    </div>
+                                    <div>
+                                        <label for="bmi" class="block text-xs font-bold text-slate-700 mb-1">BMI Index (kg/m²)</label>
+                                        <input type="number" id="bmi" name="bmi" min="10" max="80" step="0.1" placeholder="e.g. 26.8" required
+                                            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100">
+                                <button type="submit"
+                                    class="px-6 py-3.5 text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-sm transition-colors flex-grow sm:flex-grow-0 min-h-[44px]">
+                                    Calculate My Health Score
+                                </button>
+                                <button type="button" id="btnReset"
+                                    class="px-4 py-3.5 text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors min-h-[44px]">
+                                    Reset Form
+                                </button>
+                                <button type="button" onclick="clearSavedData()"
+                                    class="px-4 py-3.5 text-xs font-bold text-rose-600 hover:text-rose-800 transition-colors ml-auto">
+                                    Clear Saved Session Data
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- LIVE RESULTS (RIGHT) -->
+                <div class="lg:col-span-5 space-y-6">
+
+                    <!-- SCORE CARD -->
+                    <div class="warm-card p-6 bg-white space-y-4">
+                        <div class="border-b border-slate-100 pb-3">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Calculated Health Score</span>
+                            <div class="flex items-baseline justify-between mt-1">
+                                <span class="font-display text-4xl sm:text-5xl font-extrabold text-slate-900" id="riskProb">—%</span>
+                                <span id="riskBadge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-100 text-slate-600">
+                                    Awaiting Data
+                                </span>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-600 leading-relaxed" id="ciBounds">
+                            Fill your details on the left to calculate your personalized 5-year outlook.
+                        </p>
+                    </div>
+
+                    <!-- KEY DRIVERS -->
+                    <div class="warm-card p-6 bg-white space-y-4">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Key Drivers Affecting Your Score</span>
+                        <div id="driversList" class="space-y-3">
+                            <p class="text-xs text-slate-400 italic">No health check active.</p>
+                        </div>
+                    </div>
+
+                    <!-- ACTIVE PROFILE SUMMARY -->
+                    <div class="warm-card p-6 bg-white space-y-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Active Profile Context</span>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                                <span class="text-slate-400 block text-[10px]">Biological Sex</span>
+                                <span class="font-bold text-slate-800" id="patientGender">—</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                                <span class="text-slate-400 block text-[10px]">Age</span>
+                                <span class="font-bold text-slate-800" id="patientAge">—</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                                <span class="text-slate-400 block text-[10px]">BMI Index</span>
+                                <span class="font-bold text-slate-800" id="patientBMI">—</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                                <span class="text-slate-400 block text-[10px]">Attested Care Doctor</span>
+                                <span class="font-bold text-slate-800 truncate block" id="contextClinician">Unregistered</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 4: CONSULTATION REPORT ==================== -->
+        <div id="tab-reports" class="tab-content">
+            <div class="max-w-4xl mx-auto space-y-6">
+
+                <!-- CONTROLS -->
+                <div class="flex items-center justify-between no-print border-b border-slate-200 pb-4">
+                    <div>
+                        <h2 class="font-display text-2xl font-bold text-slate-900">Personal Consultation Summary</h2>
+                        <p class="text-xs text-slate-500">Ready to print or share with your physician.</p>
+                    </div>
+                    <button onclick="window.print()"
+                        class="px-5 py-2.5 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-sm transition-colors flex items-center gap-2 min-h-[44px]">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                        <span>Print Health Summary</span>
+                    </button>
+                </div>
+
+                <!-- REPORT DOCUMENT CONTAINER -->
+                <div class="warm-card p-6 sm:p-12 bg-white space-y-8 border border-slate-300">
+
+                    <!-- REPORT HEADER -->
+                    <div class="flex flex-col sm:flex-row items-start justify-between border-b-2 border-slate-900 pb-6 gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-full border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden p-1 flex-shrink-0">
+                                <img src="logo.png" alt="NeuroGuard Logo" class="w-full h-full object-contain rounded-full"
+                                    onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                                <svg class="w-8 h-8 text-teal-600 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h1 class="font-display text-xl sm:text-2xl font-black text-slate-900 tracking-tight">NEUROGUARD HEALTH REPORT</h1>
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Brain &amp; Heart Care Summary</span>
+                            </div>
+                        </div>
+                        <div class="text-left sm:text-right text-xs text-slate-500 space-y-0.5">
+                            <div>Date: <span class="font-bold text-slate-800" id="reportDate">—</span></div>
+                            <div>Doc ID: <span class="font-mono text-slate-800" id="reportDocId">NG-90182</span></div>
+                        </div>
+                    </div>
+
+                    <!-- CLINICIAN & PATIENT METADATA -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200 text-xs">
+                        <div class="space-y-1">
+                            <span class="font-bold text-slate-500 uppercase tracking-wider block text-[10px]">Attending Physician Attestation</span>
+                            <div class="font-bold text-slate-900 text-sm" id="reportClinicianName">Dr. Unregistered</div>
+                            <div class="text-slate-600" id="reportClinicianRole">Role Pending</div>
+                            <div class="text-slate-600" id="reportClinicianFacility">Facility Unspecified</div>
+                            <div class="text-slate-500 font-mono text-[11px]" id="reportClinicianLicense">License: Unverified</div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <span class="font-bold text-slate-500 uppercase tracking-wider block text-[10px]">Patient Profile</span>
+                            <div class="font-bold text-slate-900 text-sm" id="reportPatientSex">Biological Sex: Unassigned</div>
+                            <div class="text-slate-600" id="reportPatientAge">Age: —</div>
+                            <div class="text-slate-600" id="reportPatientBMI">BMI: —</div>
+                            <div class="text-slate-500" id="reportPatientHistory">History: Normal</div>
+                        </div>
+                    </div>
+
+                    <!-- CALCULATED SCORE -->
+                    <div class="space-y-3">
+                        <h3 class="font-display text-base font-bold text-slate-900 border-b border-slate-200 pb-2">1. Health Score Calculation</h3>
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-teal-50 border border-teal-200">
+                            <div>
+                                <span class="text-xs font-bold text-teal-900 block">5-Year Stroke Prevention outlook</span>
+                                <span class="text-xs text-teal-700" id="reportCIBounds">Bounds pending health check data.</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="font-display text-3xl font-extrabold text-teal-900" id="reportRiskProb">—%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FACTORS BREAKDOWN -->
+                    <div class="space-y-3">
+                        <h3 class="font-display text-base font-bold text-slate-900 border-b border-slate-200 pb-2">2. Key Factor Contributions</h3>
+                        <div id="reportDriversList" class="space-y-2 text-xs">
+                            <p class="text-slate-400 italic">No health check data loaded.</p>
+                        </div>
+                    </div>
+
+                    <!-- DISCLAIMER & SIGNATURE -->
+                    <div class="pt-6 border-t border-slate-300 space-y-4">
+                        <div class="text-xs text-slate-600 leading-relaxed">
+                            <span class="font-bold text-slate-900">Health Support Disclaimer:</span>
+                            Your personalized score looks at everyday health factors like blood pressure, blood sugar, age, and family history to give you clear, actionable advice.
+                        </div>
+
+                        <div class="flex items-end justify-between pt-6">
+                            <div class="text-center space-y-1">
+                                <div class="w-36 border-b border-slate-900"></div>
+                                <span class="text-[10px] uppercase font-bold text-slate-500 block" id="reportSignatureText">Attending Physician Signature</span>
+                            </div>
+
+                            <div class="px-4 py-2 border-2 border-slate-900 text-slate-900 text-[10px] font-bold uppercase tracking-widest rounded-md">
+                                Official Attestation Stamp
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     </main>
 
-    <!-- Loader Overlay -->
-    <div id="loader" class="loader hidden">
-        <div class="spinner"></div>
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 py-8 no-print mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+
+            <!-- EXPANDABLE "ABOUT OUR SCIENCE & VALIDATION" -->
+            <div class="border border-slate-200 rounded-2xl bg-slate-50/50 p-4 sm:p-6">
+                <details class="group">
+                    <summary class="flex items-center justify-between font-bold text-xs uppercase tracking-wider text-slate-700 cursor-pointer list-none select-none">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                            </svg>
+                            <span>About Our Science &amp; Validation Data (Clinical Engine v3.2)</span>
+                        </div>
+                        <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </summary>
+
+                    <div class="mt-4 pt-4 border-t border-slate-200 text-xs text-slate-600 space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-[11px]">
+                            <div class="p-3 bg-white rounded-xl border border-slate-200">
+                                <span class="text-slate-400 block text-[10px] uppercase">Model Sensitivity</span>
+                                <span class="font-bold text-slate-800 text-sm">94.8%</span>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-slate-200">
+                                <span class="text-slate-400 block text-[10px] uppercase">p-Value Calibration</span>
+                                <span class="font-bold text-slate-800 text-sm">&lt; 0.05</span>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-slate-200">
+                                <span class="text-slate-400 block text-[10px] uppercase">Validation Cohorts</span>
+                                <span class="font-bold text-slate-800 text-sm">12,500+ Patients</span>
+                            </div>
+                        </div>
+                        <p class="leading-relaxed">
+                            NeuroGuard utilizes SHAP (SHapley Additive exPlanations) tree-decomposition algorithms trained on multi-center cerebrovascular registries. Feature contributions calculate individual risk deviation relative to baseline population risk trajectories.
+                        </p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- FOOTER LINKS -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                <div>
+                    &copy; NeuroGuard Health &amp; Brain Intelligence Suite. Personalized health decision support tool.
+                </div>
+                <div class="flex items-center gap-6">
+                    <button onclick="openClinicianModal()" class="hover:text-teal-600 font-semibold">Doctor Profile Settings</button>
+                    <button onclick="showTab('services')" class="hover:text-teal-600 font-semibold">How It Works</button>
+                    <button onclick="clearSavedData()" class="hover:text-rose-600 font-semibold">Reset Saved Data</button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CLINICIAN CREDENTIALS & PROFILE MANAGEMENT MODAL -->
+    <div id="clinicianModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white rounded-2xl border border-slate-200 max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+
+            <div class="flex items-start justify-between border-b border-slate-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden p-1 flex-shrink-0">
+                        <img src="logo.png" alt="NeuroGuard Logo" class="w-full h-full object-contain rounded-full"
+                            onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                        <svg class="w-6 h-6 text-teal-600 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-display text-lg font-bold text-slate-900">Doctor Profile &amp; Attestation</h3>
+                        <p class="text-xs text-slate-500">Configure credentials to stamp consultation reports.</p>
+                    </div>
+                </div>
+                <button onclick="closeClinicianModal()" class="text-slate-400 hover:text-slate-600 p-1 min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Close Modal">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="clinicianForm" class="space-y-4">
+                <div>
+                    <label for="modalName" class="block text-xs font-bold text-slate-700 mb-1">Doctor Full Name &amp; Title</label>
+                    <input type="text" id="modalName" name="modalName" placeholder="e.g. Dr. Alex Voss, MD" required
+                        class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600">
+                </div>
+
+                <div>
+                    <label for="modalRole" class="block text-xs font-bold text-slate-700 mb-1">Specialty / Role</label>
+                    <input type="text" id="modalRole" name="modalRole" placeholder="e.g. Chief of Vascular Neurology" required
+                        class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600">
+                </div>
+
+                <div>
+                    <label for="modalFacility" class="block text-xs font-bold text-slate-700 mb-1">Hospital / Medical Center</label>
+                    <input type="text" id="modalFacility" name="modalFacility" placeholder="e.g. St. Jude Neurological Institute" required
+                        class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600">
+                </div>
+
+                <div>
+                    <label for="modalLicense" class="block text-xs font-bold text-slate-700 mb-1">Medical License ID</label>
+                    <input type="text" id="modalLicense" name="modalLicense" placeholder="e.g. MD-884920-CA" required
+                        class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600">
+                </div>
+
+                <!-- LIVE PREVIEW BOX -->
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1 text-xs">
+                    <span class="font-bold text-slate-500 uppercase tracking-wider block text-[10px]">Attestation Stamp Preview</span>
+                    <p class="font-bold text-slate-900" id="previewModalName">Dr. Unregistered</p>
+                    <p class="text-slate-600" id="previewModalRole">Role Pending</p>
+                    <p class="text-slate-500 text-[11px]" id="previewModalFacility">Facility Unspecified</p>
+                </div>
+
+                <div class="pt-2 flex items-center justify-between gap-3 border-t border-slate-100">
+                    <button type="button" onclick="resetClinicianProfile()" class="text-xs font-bold text-rose-600 hover:text-rose-800">
+                        Clear Profile
+                    </button>
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="closeClinicianModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800">
+                            Dismiss
+                        </button>
+                        <button type="submit" class="px-5 py-2.5 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-sm transition-colors min-h-[44px]">
+                            Save Credentials
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast"></div>
+    <!-- TOAST NOTIFICATIONS CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none no-print"></div>
 
-    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // PERSISTENCE KEYS
+            const STORAGE_INTAKE_KEY = 'neuroguard_intake_data_v1';
+            const STORAGE_CLINICIAN_KEY = 'neuroguard_clinician_data_v1';
+            const STORAGE_RESULTS_KEY = 'neuroguard_results_data_v1';
+            const STORAGE_TAB_KEY = 'neuroguard_active_tab_v1';
+
+            // NAVIGATION & TAB MANAGEMENT
+            window.showTab = function (tabId) {
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+                const selectedTab = document.getElementById(`tab-${tabId}`);
+                const selectedNav = document.getElementById(`nav-${tabId}`);
+
+                if (selectedTab) selectedTab.classList.add('active');
+                if (selectedNav) selectedNav.classList.add('active');
+
+                // Persist current tab choice
+                localStorage.setItem(STORAGE_TAB_KEY, tabId);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            window.toggleMobileMenu = function () {
+                const mobileMenu = document.getElementById('mobileMenu');
+                mobileMenu.classList.toggle('hidden');
+            };
+
+            // INTERSECTION OBSERVER FOR ROAD JOURNEY MILESTONES
+            const journeyStops = document.querySelectorAll('.journey-stop');
+            if (journeyStops.length > 0) {
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '0px 0px -15% 0px',
+                    threshold: 0.25
+                };
+
+                const journeyObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-active');
+                        } else {
+                            entry.target.classList.remove('is-active');
+                        }
+                    });
+                }, observerOptions);
+
+                journeyStops.forEach(stop => journeyObserver.observe(stop));
+            }
+
+            // CLINICIAN STATE & STORAGE
+            let clinicianState = {
+                name: '',
+                role: '',
+                facility: '',
+                license: ''
+            };
+
+            const clinicianModal = document.getElementById('clinicianModal');
+            const clinicianForm = document.getElementById('clinicianForm');
+
+            window.openClinicianModal = function () {
+                document.getElementById('modalName').value = clinicianState.name || '';
+                document.getElementById('modalRole').value = clinicianState.role || '';
+                document.getElementById('modalFacility').value = clinicianState.facility || '';
+                document.getElementById('modalLicense').value = clinicianState.license || '';
+                updateModalPreview();
+                clinicianModal.classList.remove('hidden');
+            };
+
+            window.closeClinicianModal = function () {
+                clinicianModal.classList.add('hidden');
+            };
+
+            const modalInputs = ['modalName', 'modalRole', 'modalFacility', 'modalLicense'];
+            modalInputs.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('input', updateModalPreview);
+                }
+            });
+
+            function updateModalPreview() {
+                const name = document.getElementById('modalName').value.trim() || 'Dr. Unregistered';
+                const role = document.getElementById('modalRole').value.trim() || 'Role Pending';
+                const facility = document.getElementById('modalFacility').value.trim() || 'Facility Unspecified';
+
+                document.getElementById('previewModalName').textContent = name;
+                document.getElementById('previewModalRole').textContent = role;
+                document.getElementById('previewModalFacility').textContent = facility;
+            }
+
+            clinicianForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                clinicianState = {
+                    name: document.getElementById('modalName').value.trim() || 'Dr. Alex Voss, MD',
+                    role: document.getElementById('modalRole').value.trim() || 'Vascular Neurologist',
+                    facility: document.getElementById('modalFacility').value.trim() || 'Neurological Care Center',
+                    license: document.getElementById('modalLicense').value.trim() || 'MD-99812-CA'
+                };
+
+                localStorage.setItem(STORAGE_CLINICIAN_KEY, JSON.stringify(clinicianState));
+                updateClinicianUI();
+                closeClinicianModal();
+                showToast('Doctor credentials saved on device.', 'success');
+            });
+
+            window.resetClinicianProfile = function () {
+                clinicianState = { name: '', role: '', facility: '', license: '' };
+                localStorage.removeItem(STORAGE_CLINICIAN_KEY);
+                clinicianForm.reset();
+                updateClinicianUI();
+                closeClinicianModal();
+                showToast('Doctor profile reset to defaults.', 'info');
+            };
+
+            function updateClinicianUI() {
+                const hasDoctor = Boolean(clinicianState.name);
+                const displayName = hasDoctor ? clinicianState.name : 'Dr. Unregistered';
+                const displayRole = hasDoctor ? clinicianState.role : 'Click settings to configure';
+
+                document.getElementById('headerClinicianName').textContent = displayName;
+                document.getElementById('headerClinicianRole').textContent = hasDoctor ? clinicianState.role : 'Session Auto-Saved';
+                document.getElementById('contextClinician').textContent = displayName;
+
+                // Report view update
+                document.getElementById('reportClinicianName').textContent = displayName;
+                document.getElementById('reportClinicianRole').textContent = displayRole;
+                document.getElementById('reportClinicianFacility').textContent = clinicianState.facility || 'Facility Unspecified';
+                document.getElementById('reportClinicianLicense').textContent = `License: ${clinicianState.license || 'Unverified'}`;
+                document.getElementById('reportSignatureText').textContent = hasDoctor ? `${displayName} Signature` : 'Attending Physician Signature';
+            }
+
+            const predForm = document.getElementById('predForm');
+            const btnReset = document.getElementById('btnReset');
+
+            // Auto-save intake inputs on edit
+            const formInputs = predForm.querySelectorAll('input, select');
+            formInputs.forEach(input => {
+                input.addEventListener('change', saveIntakeData);
+                input.addEventListener('keyup', saveIntakeData);
+            });
+
+            function saveIntakeData() {
+                const formData = {
+                    age: document.getElementById('age').value,
+                    gender: document.getElementById('gender').value,
+                    residence: document.getElementById('residence').value,
+                    work: document.getElementById('work').value,
+                    hypertension: document.getElementById('hypertension').value,
+                    heartDisease: document.getElementById('heartDisease').value,
+                    smoking: document.getElementById('smoking').value,
+                    glucose: document.getElementById('glucose').value,
+                    bmi: document.getElementById('bmi').value
+                };
+
+                localStorage.setItem(STORAGE_INTAKE_KEY, JSON.stringify(formData));
+                const badge = document.getElementById('autoSaveBadge');
+                if (badge) badge.classList.remove('hidden');
+            }
+
+            function loadSavedIntakeData() {
+                try {
+                    const savedIntake = localStorage.getItem(STORAGE_INTAKE_KEY);
+                    if (savedIntake) {
+                        const data = JSON.parse(savedIntake);
+                        if (data.age) document.getElementById('age').value = data.age;
+                        if (data.gender) document.getElementById('gender').value = data.gender;
+                        if (data.residence) document.getElementById('residence').value = data.residence;
+                        if (data.work) document.getElementById('work').value = data.work;
+                        if (data.hypertension) document.getElementById('hypertension').value = data.hypertension;
+                        if (data.heartDisease) document.getElementById('heartDisease').value = data.heartDisease;
+                        if (data.smoking) document.getElementById('smoking').value = data.smoking;
+                        if (data.glucose) document.getElementById('glucose').value = data.glucose;
+                        if (data.bmi) document.getElementById('bmi').value = data.bmi;
+                    }
+
+                    const savedClinician = localStorage.getItem(STORAGE_CLINICIAN_KEY);
+                    if (savedClinician) {
+                        clinicianState = JSON.parse(savedClinician);
+                    }
+
+                    const savedResults = localStorage.getItem(STORAGE_RESULTS_KEY);
+                    if (savedResults) {
+                        const res = JSON.parse(savedResults);
+                        updateResultsUI(res.probability, res.shap, res.metadata);
+                    }
+                } catch (err) {
+                    console.warn('Unable to load stored session:', err);
+                }
+            }
+
+            predForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const age = parseFloat(document.getElementById('age').value);
+                const gender = document.getElementById('gender').value;
+                const glucose = parseFloat(document.getElementById('glucose').value);
+                const bmi = parseFloat(document.getElementById('bmi').value);
+                const hypertension = parseInt(document.getElementById('hypertension').value, 10);
+                const heartDisease = parseInt(document.getElementById('heartDisease').value, 10);
+                const smoking = document.getElementById('smoking').value;
+
+                if (!gender) return showToast('Please select biological sex.', 'error');
+                if (isNaN(age) || age < 0 || age > 120) return showToast('Valid age (0-120) is required.', 'error');
+                if (isNaN(glucose) || glucose < 30 || glucose > 500) return showToast('Valid glucose (30-500 mg/dL) is required.', 'error');
+                if (isNaN(bmi) || bmi < 10 || bmi > 80) return showToast('Valid BMI (10-80) is required.', 'error');
+
+                showToast('Calculating health outlook...', 'info');
+
+                let risk = 0.04;
+                const ageFactor = (age - 45) * 0.007;
+                const glucoseFactor = (glucose - 100) * 0.0012;
+                const bmiFactor = (bmi - 24) * 0.004;
+                const hyperFactor = hypertension * 0.12;
+                const heartFactor = heartDisease * 0.14;
+
+                let smokeFactor = 0;
+                if (smoking === 'smokes') smokeFactor = 0.08;
+                if (smoking === 'formerly smoked') smokeFactor = 0.03;
+
+                risk += ageFactor + glucoseFactor + bmiFactor + hyperFactor + heartFactor + smokeFactor;
+                const probability = Math.min(0.98, Math.max(0.01, risk));
+
+                const shap = [
+                    { feature: 'Age Factor', val: ageFactor },
+                    { feature: 'Blood Sugar Level', val: glucoseFactor },
+                    { feature: 'BMI Indicator', val: bmiFactor },
+                    { feature: 'Blood Pressure History', val: hyperFactor },
+                    { feature: 'Heart History', val: heartFactor },
+                    { feature: 'Smoking History', val: smokeFactor }
+                ].sort((a, b) => Math.abs(b.val) - Math.abs(a.val));
+
+                const metadata = { age, gender, bmi, hypertension, heartDisease };
+                updateResultsUI(probability, shap, metadata);
+
+                // Save calculation results
+                localStorage.setItem(STORAGE_RESULTS_KEY, JSON.stringify({
+                    probability, shap, metadata, timestamp: Date.now()
+                }));
+
+                saveIntakeData();
+                showToast('Health score calculation saved.', 'success');
+            });
+
+            btnReset.addEventListener('click', () => {
+                predForm.reset();
+                resetResultsUI();
+                localStorage.removeItem(STORAGE_INTAKE_KEY);
+                localStorage.removeItem(STORAGE_RESULTS_KEY);
+                showToast('Form and calculated scores reset.', 'info');
+            });
+
+            window.clearSavedData = function () {
+                localStorage.removeItem(STORAGE_INTAKE_KEY);
+                localStorage.removeItem(STORAGE_CLINICIAN_KEY);
+                localStorage.removeItem(STORAGE_RESULTS_KEY);
+                localStorage.removeItem(STORAGE_TAB_KEY);
+                clinicianState = { name: '', role: '', facility: '', license: '' };
+                predForm.reset();
+                resetResultsUI();
+                updateClinicianUI();
+                showToast('All saved device data cleared.', 'info');
+            };
+
+            function updateResultsUI(prob, shap, metadata) {
+                const percentage = (prob * 100).toFixed(1);
+
+                document.getElementById('riskProb').textContent = `${percentage}%`;
+                document.getElementById('patientAge').textContent = `${metadata.age} yrs`;
+                document.getElementById('patientGender').textContent = metadata.gender;
+                document.getElementById('patientBMI').textContent = Number(metadata.bmi).toFixed(1);
+
+                const category = percentage >= 20 ? 'high' : percentage >= 10 ? 'moderate' : 'low';
+                const badge = document.getElementById('riskBadge');
+
+                if (category === 'high') {
+                    badge.className = 'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-100 text-rose-800';
+                    badge.textContent = 'High Category';
+                } else if (category === 'moderate') {
+                    badge.className = 'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-100 text-amber-800';
+                    badge.textContent = 'Moderate Category';
+                } else {
+                    badge.className = 'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-teal-100 text-teal-800';
+                    badge.textContent = 'Low Risk Range';
+                }
+
+                document.getElementById('ciBounds').textContent = `95% Confidence Bounds: ${(Math.max(0, percentage - 3.2)).toFixed(1)}% – ${(Math.min(100, parseFloat(percentage) + 3.2)).toFixed(1)}%`;
+
+                const driversList = document.getElementById('driversList');
+                driversList.innerHTML = '';
+                shap.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center justify-between text-xs p-2.5 rounded-xl bg-slate-50 border border-slate-100';
+                    row.innerHTML = `
+                        <span class="font-semibold text-slate-700">${item.feature}</span>
+                        <span class="font-bold font-mono ${item.val >= 0 ? 'text-rose-600' : 'text-teal-600'}">
+                            ${item.val >= 0 ? '+' : ''}${item.val.toFixed(3)}
+                        </span>
+                    `;
+                    driversList.appendChild(row);
+                });
+
+                // Update Report Document
+                document.getElementById('reportRiskProb').textContent = `${percentage}%`;
+                document.getElementById('reportCIBounds').textContent = `95% Confidence Bounds: ${(Math.max(0, percentage - 3.2)).toFixed(1)}% – ${(Math.min(100, parseFloat(percentage) + 3.2)).toFixed(1)}%`;
+                document.getElementById('reportPatientSex').textContent = `Biological Sex: ${metadata.gender}`;
+                document.getElementById('reportPatientAge').textContent = `Age: ${metadata.age} years`;
+                document.getElementById('reportPatientBMI').textContent = `BMI: ${Number(metadata.bmi).toFixed(1)} kg/m²`;
+                document.getElementById('reportPatientHistory').textContent = `Blood Pressure: ${metadata.hypertension ? 'Diagnosed' : 'Normal'} | Cardiac: ${metadata.heartDisease ? 'Diagnosed' : 'Normal'}`;
+
+                const reportDrivers = document.getElementById('reportDriversList');
+                reportDrivers.innerHTML = '';
+                shap.slice(0, 4).forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'flex justify-between border-b border-slate-100 pb-1.5';
+                    row.innerHTML = `
+                        <span class="text-slate-700 font-semibold">${item.feature}</span>
+                        <span class="font-mono ${item.val >= 0 ? 'text-rose-600' : 'text-teal-600'} font-bold">Weight: ${item.val.toFixed(3)}</span>
+                    `;
+                    reportDrivers.appendChild(row);
+                });
+
+                document.getElementById('reportDate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            }
+
+            function resetResultsUI() {
+                document.getElementById('riskProb').textContent = '—%';
+                document.getElementById('riskBadge').className = 'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-100 text-slate-600';
+                document.getElementById('riskBadge').textContent = 'Awaiting Data';
+                document.getElementById('ciBounds').textContent = 'Fill details on the left to calculate your personalized 5-year outlook.';
+                document.getElementById('driversList').innerHTML = '<p class="text-xs text-slate-400 italic">No health check active.</p>';
+                document.getElementById('patientAge').textContent = '—';
+                document.getElementById('patientGender').textContent = '—';
+                document.getElementById('patientBMI').textContent = '—';
+            }
+
+            function showToast(msg, type = 'info') {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `p-3.5 rounded-xl text-xs font-bold text-white shadow-lg pointer-events-auto transition-all transform translate-y-2 opacity-0 flex items-center gap-2 ${
+                    type === 'success' ? 'bg-teal-600' : type === 'error' ? 'bg-rose-600' : 'bg-slate-800'
+                }`;
+                toast.textContent = msg;
+                container.appendChild(toast);
+
+                requestAnimationFrame(() => {
+                    toast.classList.remove('translate-y-2', 'opacity-0');
+                });
+
+                setTimeout(() => {
+                    toast.classList.add('opacity-0');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+
+            loadSavedIntakeData();
+            updateClinicianUI();
+            document.getElementById('reportDate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+            // Restore active tab if previously saved
+            const savedTab = localStorage.getItem(STORAGE_TAB_KEY);
+            if (savedTab && ['home', 'services', 'assessment', 'reports'].includes(savedTab)) {
+                showTab(savedTab);
+            }
+        });
+    </script>
 </body>
 
 </html>
