@@ -1,4 +1,4 @@
-# NeuroGuard
+# NeuroGuard :-) [![Live Demo](https://img.shields.io/badge/Live-Demo-2563EB?style=for-the-badge)](https://neuro-guard-omega.vercel.app/)
 ### Explainable Stroke Risk Prediction System
 
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg)]()
