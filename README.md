@@ -1,10 +1,6 @@
 # NeuroGuard
 ### Explainable Stroke Risk Prediction System
 
-<p align="center">
-
-<img src="apps\api\web\logo.png" width="140"/>
-
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg)]()
 [![FastAPI](https://img.shields.io/badge/FastAPI-Production-green.svg)]()
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-ML-orange.svg)]()
